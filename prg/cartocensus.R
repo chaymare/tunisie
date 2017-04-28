@@ -1,3 +1,8 @@
+# *****************************************
+# Cartographie des données du recensement *
+# *****************************************
+
+
 library("cartography")
 
 # [1] Chargement du fichier de données

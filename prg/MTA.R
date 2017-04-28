@@ -1,6 +1,7 @@
-# ***********************************
-# ANALYSE TERRITORIALE MULTISCALAIRE
-# ***********************************
+# *************************************
+# Analyse Territioriale Multiscalaire *
+# *************************************
+
 library("cartography")
 library("MTA")
 

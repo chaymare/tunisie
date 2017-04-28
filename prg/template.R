@@ -1,3 +1,7 @@
+# ********************************************
+# Création d'un template cartographique en R *
+# ********************************************
+
 # [1] Chargement du fichier de données
 
 load("data/geometriesTN.RData")
