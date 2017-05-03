@@ -120,29 +120,44 @@ library("rgdal")
 # Importer un shapfile
 # monFondDeCarte <-readOGR(dsn ="/repertoire-de-travail",layer = "nom-de-la-couche")
 
-# Importer un ficher json
-delegations.spdf <- readOGR(dsn = "data/TN-delegations.geojson", layer = "OGRGeoJSON")
+# Importer un ficher shapfile
+
+# Chemin absolu
+monFondDeCarte <-readOGR(dsn ="/home/nlambert/Desktop/shapfile",layer = "delegations")
+
+# Chemin relafif
+setwd("/home/nlambert/Desktop/") # je défini mon  répertoire de travail
+monFondDeCarte <-readOGR(dsn ="shapfile",layer = "delegations",encoding = "UTF-8")
+
+#delegations.spdf <- readOGR(dsn = "data/TN-delegations.geojson", layer = "OGRGeoJSON")
 
 # Explorer le ficher
-class(delegations.spdf)
-proj4string(delegations.spdf)
-head(delegations.spdf@data)
+class(monFondDeCarte)
+proj4string(monFondDeCarte)
+monFondDeCarte@data
+head(monFondDeCarte@data)
+
+nomsdelegations <- monFondDeCarte@data$del_fr
+monFondDeCarte@data[,2]
 
 # Afficher
-plot(delegations.spdf)
-plot(delegations.spdf,col="red",border="white",lwd=0.6)
+plot(monFondDeCarte)
+plot(monFondDeCarte,col="#FF0000",border="white",lwd=0.6)
 
-# Faire une jointure
+# Import des données attributaires
 
-fonddecarte <- delegations.spdf
-données <- my.df
+donnees <- read.csv("data_carto_census2014.csv",header=TRUE,sep=",",dec=".")
 
-head(fonddecarte@data)
-head(données)
+# Vérification
 
-fonddecarte@data <- data.frame(fonddecarte@data, données[match(fonddecarte@data[,"del_id"], données[,"id"]),])
-head(fonddecarte@data )
+head(monFondDeCarte@data,4)
+head(donnees,4)
+
+# Jointure
+
+monFondDeCarte@data <- data.frame(monFondDeCarte@data, donnees[match(monFondDeCarte@data[,"id"], donnees[,"id"]),])
+head(monFondDeCarte@data )
 
 # Exporter au format shapfile
-#writeOGR(obj=fonddecarte, dsn="outputs", layer="monshapfile", driver="ESRI Shapefile") # this is in equal area projection
+writeOGR(obj=monFondDeCarte, dsn="outputs", layer="monshapefile", driver="ESRI Shapefile")
 
