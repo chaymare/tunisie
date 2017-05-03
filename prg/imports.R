@@ -45,3 +45,5 @@ coastlines.sp <- as(rgeos::gBuffer(countries.spdf,byid=FALSE),'SpatialLines')
 
 save(list = c("delegations.spdf","gouvernorats.spdf","countries.spdf","others.spdf","shadow.spdf","coastlines.sp"), file = "data/geometriesTN.RData")
 
+delegations.spdf@data
+

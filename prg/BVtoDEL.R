@@ -12,7 +12,6 @@ BV.df<-read.csv( "data/Tableau Final_Avrl2017.csv",header=TRUE,sep=",",dec=".",e
 
 # [3] Quelques resumés statistiques
 
-summary(BV.df)
 
 var <- BV.df$Total_T1
 hist(var, probability = TRUE, nclass = 30, col="lightgreen")
@@ -23,13 +22,16 @@ abline(v = moy, col = "red", lwd = 3)
 abline(v = med, col = "blue", lwd = 3)
 
 # [4] Aggregation des données par delegation
-
+colnames(BV.df)
 # choix des variables à sommer
 stocks <- colnames(BV.df)[15:length(BV.df)]
+stocks
+head(BV.df)
 
 # Aggrégation
 VoteByDeleg.df <- aggregate(BV.df[,stocks], by = list(BV.df$del_id, BV.df$del_fr), FUN=sum)
 names(VoteByDeleg.df) <- c("id","name",stocks)
+
 
 # Export
 write.csv(VoteByDeleg.df,"data/VoteByDeleg.csv",row.names = F)

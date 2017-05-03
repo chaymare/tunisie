@@ -8,7 +8,7 @@ library("cartography")
 # [1] Chargement du fichier de données
 
 load("data/geometriesTN.RData")
-
+delegations.spdf@data$del_id
 # [2] Import de données correctement formatées (code SNUTS)
 
 my.df<-read.csv( "data/data_carto_census2014.csv",header=TRUE,sep=",",dec=".",encoding="utf-8")
