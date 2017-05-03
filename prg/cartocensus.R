@@ -11,8 +11,8 @@ load("data/geometriesTN.RData")
 
 # [2] Import de données correctement formatées (code SNUTS)
 
-my.df<-read.csv( "data/data_carto_census2014.csv",header=TRUE,sep=";",dec=",",encoding="utf-8")
-
+my.df<-read.csv( "data/data_carto_census2014.csv",header=TRUE,sep=",",dec=".",encoding="utf-8")
+head(my.df)
 # [3] Creation d'une carte de stock
 
 opar <- par(mar = c(0, 0, 1.2, 0))
@@ -35,13 +35,13 @@ layoutLayer(title = "Population totale, 2014",  # Changer ici le titre de la car
 propSymbolsLayer(spdf = delegations.spdf, df = my.df,
                  var = "pop_t_2014", # Changer ici le nom de la variable ? cartographier 
                  fixmax = max(my.df$pop_t_2014),
-                 inches = 0.1,
+                 inches = 0.07,
                  symbols = "circle", col =  "red",
                  border = "white",
+                 lwd=0.5,
                  legend.pos = "right",
                  legend.title.txt = "Population totale, 2014", # Changer ici le titre de la l?gende
                  legend.style = "e")
-
 
 
 # [3] Creation d'une carte de choroplèthe
@@ -78,4 +78,7 @@ layoutLayer(title = "Distances aux hôpitaux", # Changer ici le titre de la cart
             sources = "sources : INS, 2014", 
             scale = 100, theme = "taupe.pal", north = TRUE, frame = TRUE)  # add a south arrow
 
+
+levels(delegations.spdf@data$del_id)
+my.df$id
 

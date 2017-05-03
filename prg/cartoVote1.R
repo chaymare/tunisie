@@ -2,6 +2,8 @@
 # Cartographie des scores d'un candidats *
 # ****************************************
 
+library("cartography")
+
 # [1] Chargement du fichier de données
 
 load("data/geometriesTN.RData")

@@ -63,10 +63,6 @@ layoutLayer(title = candidat, # Changer ici le titre de la carte
             scale = 100, theme = "taupe.pal", north = TRUE, frame = TRUE)  # add a south arrow
 }
 
-# Etape 2 : Appel de la fonction
-
-
-
 # Pour appliquer cette fonction à tous les candidats, on fait une boucle
 ListeCandidats <- names(scores.df[,8:34])
 for (i in ListeCandidats){
