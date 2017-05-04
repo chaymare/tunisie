@@ -82,7 +82,6 @@ opar <- par(mar = c(0, 0, 1.2, 0))
 plot(delegations.spdf, border = NA, col = NA, bg = "#A6CAE0")
 plot(countries.spdf,border="white",col="#eadac1", lwd=0.6, add=T)
 plot(shadow.spdf,col="#2D3F4580",border="NA",add=T)
-
 # Cartographie d'un ratio (attention discretisation !!)
 choroLayer(spdf = delegations.spdf,
            df = my.df,
@@ -106,16 +105,103 @@ layoutLayer(title = "Distances aux hôpitaux", # Changer ici le titre de la cart
             sources = "sources : INS, 2014", 
             scale = 100, theme = "taupe.pal", north = TRUE, frame = TRUE)  # add a south arrow
 
-
+delegations.spdf@data
+head(my.df)
 # Faire une carte sur le taux d'occupation des logements
 
 # Etape 1 : créer ma nouvelle variable
 head(my.df)
 
 my.df$txocc <- my.df$pop_t_2014 / my.df$log_t_2014
-my.df$txocc <- round(my.df$txocc,1)
+my.df$txocc <- round(my.df$txocc,2)
 head(my.df)
 summary(my.df$txocc)
 hist(my.df$txocc)
-#dev.off()
+
+
+lesbornes <- getBreaks(v = my.df$txocc, method = "msd", k = 1, middle = TRUE)
+lesbornes
+
+length(breaks) - 1
+
+
+lescouleurs <- carto.pal(pal1 = "wine.pal", n1 = 3, 
+                  pal2 = "turquoise.pal", n2 = 3, middle = T)
+my.df[1:2,]
+
+delegations.spdf[substr(delegations.spdf@data$id,1,3)=="TN1",]
+
+plot(delegations.spdf[substr(delegations.spdf@data$id,1,3)=="TN1",])
+
+choroLayer(spdf = delegations.spdf, df = my.df, breaks = lesbornes,
+           col = lescouleurs, 
+           var = "txocc", legend.values.rnd = 2, border = NA, add=T)
+
+
+# EXERCICE : Creer une carte dans le template avec :
+# des symbols proportionnels gradués
+# Deux variables : population totale & tx d'occupation des logements
+
+# Etape 1 (si ca n'ets pas déjà fait) : chargement des données
+load("data/geometriesTN.RData")
+my.df<-read.csv( "data/data_carto_census2014.csv",header=TRUE,sep=",",dec=".",encoding="utf-8")
+
+# Etape 2 : créer ma vriable txocc
+head(my.df)
+my.df$txocc <- round(my.df$pop_t_2014/my.df$log_t_2014,2)
+head(my.df)
+
+# Etape 3 : analyse des données (choix de discretisation, choix de couleurs, etc.)
+dev.off()
+summary(my.df$txocc) # résumé statistique de la serie
+boxplot(x = my.df$txocc)
+hist(my.df$txocc, nclass = 30,col="green")
+rug(my.df$txocc)
+moy <- mean(my.df$txocc)
+med <- median(my.df$txocc)
+sdev <- sd(my.df$txocc)
+abline(v = moy, col = "red", lwd = 3)
+abline(v = med, col = "blue", lwd = 3)
+abline(v = moy + 0.5*sdev, col = "grey", lwd = 3)
+abline(v = moy - 0.5*sdev, col = "grey", lwd = 3)
+
+mesbornes <- getBreaks(v = my.df$txocc, method = "msd", k = 1, middle = TRUE)
+mesbornes <- round(mesbornes,2)
+mesbornes <- mesbornes[c(1,3,4,5,6,8)]
+
+hist(my.df$txocc, probability = TRUE, breaks = mesbornes, col = "green")
+abline(v = moy, col = "blue", lwd = 3)
+?cartography
+
+display.carto.all(5)
+mescouleurs <- carto.pal(pal1 = "orange.pal", n1 = 5)
+mescouleurs2 <- carto.pal(pal1 = "blue.pal", n1 = 2,pal2 = "red.pal", n2 = 2,middle = T)
+
+hist(my.df$txocc, probability = TRUE, breaks = mesbornes, col = mescouleurs2)
+abline(v = moy, col = "blue", lwd = 3)
+
+# Etape 4 : Afficher le template
+plot(delegations.spdf, border = NA, col = NA, bg = "#A6CAE0")
+plot(countries.spdf,border="white",col="#eadac1", lwd=0.6, add=T)
+plot(shadow.spdf,col="#2D3F4580",border="NA",add=T)
+plot(delegations.spdf, border = "white", col = "#cca992",lwd=0.2,add=T)
+plot(gouvernorats.spdf, border = "white", col = NA,lwd=0.4,add=T)
+plot(coastlines.sp,col="#0e7aa5", lwd=1, add=T)
+plot(others.spdf,col="#15629630",border=NA, add=T)
+layoutLayer(title = "Taux d'occupation en 2014",  # Changer ici le titre de la carte
+            author = "UMS RIATE / Université de Sfax", 
+            sources = "sources : INS, 2014", # Changer ici les sources utilis?es 
+            scale = 100, theme = "taupe.pal", 
+            north = TRUE, frame = TRUE)  # add a south arrow
+
+# Etape 4 : Trouver la fonction qui permet de faire un symbole prop gradué et lire la doc
+propSymbolsChoroLayer(spdf = delegations.spdf, df = my.df, 
+                      var = "pop_t_2014", var2 = "txocc", 
+                      breaks = mesbornes, col = mescouleurs2,
+                      inches = 0.1, symbols="square",
+                      legend.var.style = "e")
+                      
+# Etape 5 : La parametrer.
+
+
 

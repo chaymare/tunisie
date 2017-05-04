@@ -8,7 +8,8 @@ load("data/geometriesTN.RData")
 
 # [2] Import de données correctement formatées
 
-BV.df<-read.csv( "data/BV_v2.csv",header=TRUE,sep=",",dec=".",encoding="utf-8")
+BV.df<-read.csv( "data/BV_v3.csv",header=TRUE,sep=",",dec=".",encoding="utf-8")
+head(BV.df)
 
 # [3] Quelques resumés statistiques
 
@@ -26,18 +27,16 @@ colnames(BV.df)
 
 # Pour l'exercice, on ne selectionne que les BV sans erreurs
 
-BV.df <- BV.df[BV.df$erreur==0,]
-
 # choix des variables à sommer
 
-stocks <- colnames(BV.df)[16:length(BV.df)-1]
-
-
+stocks <- colnames(BV.df)[17:length(BV.df)-2]
 
 # Aggrégation
 
 VoteByDeleg.df <- aggregate(BV.df[,stocks], by = list(BV.df$del_id, BV.df$del_fr), FUN=sum)
 names(VoteByDeleg.df) <- c("id","name",stocks)
+
+head(VoteByDeleg.df)
 
 # Export
 write.csv(VoteByDeleg.df,"data/VoteByDeleg.csv",row.names = F)
