@@ -156,8 +156,8 @@ head(donnees,4)
 # Jointure
 
 monFondDeCarte@data <- data.frame(monFondDeCarte@data, donnees[match(monFondDeCarte@data[,"id"], donnees[,"id"]),])
-head(monFondDeCarte@data )
-
+names(monFondDeCarte@data )
+monFondDeCarte@data <- monFondDeCarte@data[,c("id","del_fr","pop_t_2014")]
 # Exporter au format shapfile
 writeOGR(obj=monFondDeCarte, dsn="outputs", layer="monshapefile", driver="ESRI Shapefile")
-
+getwd()

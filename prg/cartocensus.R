@@ -73,6 +73,10 @@ choroLayer(spdf = delegations.spdf, df = my.df, spdfid = "id", dfid = "id",
            col = cols)
 
 
+choroLayer(spdf = cartogram_pop2014.spdf, df = my.df, spdfid = "id", dfid = "id",
+           var = "log_hosp_2k._2014", method = "q6", nclass = 6,
+           col = cols)
+
 
 opar <- par(mar = c(0, 0, 1.2, 0))
 #pdf(file = "../outputs/template.pdf", width = 15, height = 20)
@@ -191,9 +195,11 @@ plot(others.spdf,col="#15629630",border=NA, add=T)
 layoutLayer(title = "Taux d'occupation en 2014",  # Changer ici le titre de la carte
             author = "UMS RIATE / Université de Sfax", 
             sources = "sources : INS, 2014", # Changer ici les sources utilis?es 
-            scale = 100, theme = "taupe.pal", 
+            scale = NULL, theme = "taupe.pal", 
             north = TRUE, frame = TRUE)  # add a south arrow
 
+locator(1)
+barscale(size = 100, lwd = 1.5, cex = 0.6, pos = c(181642.3,3508593), style = "pretty")
 # Etape 4 : Trouver la fonction qui permet de faire un symbole prop gradué et lire la doc
 propSymbolsChoroLayer(spdf = delegations.spdf, df = my.df, 
                       var = "pop_t_2014", var2 = "txocc", 
