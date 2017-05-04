@@ -2,13 +2,12 @@
 # Cartographie des données du recensement *
 # *****************************************
 
-
 library("cartography")
 
 # [1] Chargement du fichier de données
 
 load("data/geometriesTN.RData")
-delegations.spdf@data$del_id
+
 # [2] Import de données correctement formatées (code SNUTS)
 
 my.df<-read.csv( "data/data_carto_census2014.csv",header=TRUE,sep=",",dec=".",encoding="utf-8")
@@ -39,12 +38,41 @@ propSymbolsLayer(spdf = delegations.spdf, df = my.df,
                  symbols = "circle", col =  "red",
                  border = "white",
                  lwd=0.5,
-                 legend.pos = "right",
+                 legend.pos = "topleft",
                  legend.title.txt = "Population totale, 2014", # Changer ici le titre de la l?gende
                  legend.style = "e")
 
 
 # [3] Creation d'une carte de choroplèthe
+
+
+# analyse de la distribution
+var <- my.df$log_hosp_2k._2014
+par(opar)
+dev.off()
+hist(var, probability = TRUE, nclass = 20)
+rug(var)
+moy <- mean(var)
+med <- median(var)
+abline(v = moy, col = "red", lwd = 3)
+abline(v = med, col = "blue", lwd = 3)
+
+# choix de la discretisation, choix des bornes
+breaks <- getBreaks(var,nclass=6, method="q6")
+breaks <- round(breaks,1)
+breaks
+
+# choix des couleurs
+display.carto.all(n = 6)
+cols <- carto.pal(pal1 = "pink.pal",n1 = 6)
+
+# cart choroplethe
+
+choroLayer(spdf = delegations.spdf, df = my.df, spdfid = "id", dfid = "id",
+           var = "log_hosp_2k._2014", method = "q6", nclass = 6,
+           col = cols)
+
+
 
 opar <- par(mar = c(0, 0, 1.2, 0))
 #pdf(file = "../outputs/template.pdf", width = 15, height = 20)
@@ -79,6 +107,15 @@ layoutLayer(title = "Distances aux hôpitaux", # Changer ici le titre de la cart
             scale = 100, theme = "taupe.pal", north = TRUE, frame = TRUE)  # add a south arrow
 
 
-levels(delegations.spdf@data$del_id)
-my.df$id
+# Faire une carte sur le taux d'occupation des logements
+
+# Etape 1 : créer ma nouvelle variable
+head(my.df)
+
+my.df$txocc <- my.df$pop_t_2014 / my.df$log_t_2014
+my.df$txocc <- round(my.df$txocc,1)
+head(my.df)
+summary(my.df$txocc)
+hist(my.df$txocc)
+#dev.off()
 
