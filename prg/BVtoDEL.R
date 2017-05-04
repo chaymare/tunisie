@@ -30,13 +30,17 @@ colnames(BV.df)
 # choix des variables à sommer
 
 stocks <- colnames(BV.df)[17:length(BV.df)-2]
-
+stocks
 # Aggrégation
 
-VoteByDeleg.df <- aggregate(BV.df[,stocks], by = list(BV.df$del_id, BV.df$del_fr), FUN=sum)
-names(VoteByDeleg.df) <- c("id","name",stocks)
-
-head(VoteByDeleg.df)
+VoteByDeleg.df <- aggregate(BV.df[,stocks], by = list(BV.df$del_id), FUN=sum)
+names(VoteByDeleg.df) <- c("id",stocks)
+colnames(VoteByDeleg.df)
+VoteByDeleg.df$Inscrits <- round(VoteByDeleg.df$Inscrits,0)
+VoteByDeleg.df$Votants <- round(VoteByDeleg.df$Votants,0)
+VoteByDeleg.df$V_exprm <- round(VoteByDeleg.df$V_exprm,0)
+VoteByDeleg.df$V_nuls <- round(VoteByDeleg.df$V_nuls,0)
+VoteByDeleg.df$V_blancs <- round(VoteByDeleg.df$V_blancs,0)
 
 # Export
 write.csv(VoteByDeleg.df,"data/VoteByDeleg.csv",row.names = F)
