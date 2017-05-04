@@ -16,7 +16,7 @@ head(my.df)
 scores.df <- my.df
 for (i in 9:34){
   scores.df[,i] <- (scores.df[,i]/scores.df[,"V_exprm"])*100
-  scores.df[,i] <- round(scores.df[,i],1)
+  scores.df[,i] <- round(scores.df[,i],3)
 }
 head(scores.df)
 

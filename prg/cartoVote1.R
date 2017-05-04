@@ -2,6 +2,8 @@
 # Cartographie des scores d'un candidats *
 # ****************************************
 
+# setwd(".......")
+getwd()
 library("cartography")
 
 # [1] Chargement du fichier de données
@@ -16,7 +18,7 @@ head(my.df)
 # [3] Choix d'un candidat et calcul du score électoral
 
 candidat <- "CAND_24"
-tab.df <- my.df[,c("id","name",candidat,"V_exprm")]
+tab.df <- my.df[,c("id",candidat,"V_exprm")]
 tab.df$score <- (tab.df[,candidat]/tab.df$V_exprm)*100
 tab.df$score <- round(tab.df$score,1)
 
@@ -66,3 +68,18 @@ layoutLayer(title = candidat, # Changer ici le titre de la carte
             author = "UMS RIATE / Université de Sfax, 2017", 
             sources = "Sources : Instance Supérieure\nIndépendante pour les Élections, 2017", 
             scale = 100, theme = "taupe.pal", north = TRUE, frame = TRUE)  # add a south arrow
+
+# Version 2
+
+
+choroLayer(spdf = cartogram_pop2014.spdf,
+           df = tab.df,
+           var = "score",
+           breaks = breaks,
+           col = cols,
+           border = "white",
+           lwd=0.4,
+           add = FALSE,
+           legend.pos = "topleft",
+           legend.title.txt = paste("Score de",candidat,"\nen % des\nsuffrages\nexprimés",sep=" "), # Changer ici le titre de la l?gende
+           legend.values.rnd = 1)

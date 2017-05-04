@@ -12,10 +12,10 @@ my.df<-read.csv( "data/VoteByDeleg.csv",header=TRUE,sep=",",dec=".",encoding="ut
 head(my.df,2)
 
 # taux de participation
-results.df <- my.df[,c("id","name")]
+results.df <- my.df[,c("id")]
 results.df$txparticipation <- round(my.df$Votants/my.df$Inscrits*100,1)
 
-# taux d''abstention
+# taux d'abstention
 results.df$txabstention <- 100-round(my.df$Votants/my.df$Inscrits*100,1)
 
 # Part des blancs et nuls
