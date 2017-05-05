@@ -10,8 +10,8 @@
 # 1. Choisir le dossier
 # ===================================
 
-
-setwd("/Users/claudegrasland1/Documents/cg/data/tunisie-master/data")
+getwd()
+#setwd("/Users/claudegrasland1/Documents/cg/data/tunisie-master/data")
 list.files()
 
 
@@ -19,24 +19,23 @@ list.files()
 # 2. Charger les  packages utilesة
 # ===================================
 
-library(maptools)
-library(cartography)
-library(vcd)
-library(ineq)
+library("maptools")
+library("cartography")
+library("vcd")
+library("ineq")
 
 # ===================================
 # 3. Import et jointure
 # ===================================
 
 # 3.1 Importation du fonds de carte
-load("geometriesTN.RData")
-del1<-delegations.spdf
-gouv1<-gouvernorats.spdf
-del2<-readShapeSpatial("delegations_pop2014.shp")
-
-
+load("data/geometriesTN.RData")
+del1 <- delegations.spdf
+gouv1 <- gouvernorats.spdf
+del2 <- cartogram_pop2014.spdf
 
 # Réglage des marges la fenêtre d'affichage
+
 par(mfrow=c(1,2), mar=c(0,0,1.2,0))
 plot(del1,col="lightyellow",border="gray60",lwd=0.1)
 plot(gou1,add=T,border="gray20",lwd=0.5)
@@ -44,20 +43,17 @@ title("Carte vide",cex.main=1)
 plot(del2,col="lightyellow",border="gray60",lwd=0.1)
 title("Carte vide",cex.main=1)
 
-
-
-
 # 3.2 Importation des données
 list.files()
 
-stat1<-read.csv( "VoteByDeleg.csv",
+stat1<-read.csv( "data/VoteByDeleg.csv",
                 header=TRUE,
                 sep=",",
                 dec=".",
                 encoding="UTF8",stringsAsFactors = F)
 head(stat1)
 
-stat2<-read.csv( "data_admin_2014.csv",
+stat2<-read.csv( "data/data_admin_2014.csv",
                  header=TRUE,
                  sep=",",
                  dec=",",
