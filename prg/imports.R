@@ -44,6 +44,7 @@ coastlines.sp <- as(rgeos::gBuffer(countries.spdf,byid=FALSE),'SpatialLines')
 cartogram_pop2014.spdf <- readOGR(dsn = "data",layer="delegations_pop2014")
 cartogramgouv_pop2014.spdf <- readOGR(dsn = "data",layer="gouvernorats_pop2014")
 
+
 # [5] Export des couches dans le format Rdata
 
 save(list = c("delegations.spdf","gouvernorats.spdf","countries.spdf","others.spdf","shadow.spdf","coastlines.sp","cartogram_pop2014.spdf","cartogramgouv_pop2014.spdf"), file = "data/geometriesTN.RData")

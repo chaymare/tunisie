@@ -33,14 +33,16 @@ load("data/geometriesTN.RData")
 del1 <- delegations.spdf
 gouv1 <- gouvernorats.spdf
 del2 <- cartogram_pop2014.spdf
+gouv2 <- cartogramgouv_pop2014.spdf
 
 # Réglage des marges la fenêtre d'affichage
 
 par(mfrow=c(1,2), mar=c(0,0,1.2,0))
 plot(del1,col="lightyellow",border="gray60",lwd=0.1)
-plot(gou1,add=T,border="gray20",lwd=0.5)
+plot(gouv1,add=T,border="gray20",lwd=0.5)
 title("Carte vide",cex.main=1)
 plot(del2,col="lightyellow",border="gray60",lwd=0.1)
+plot(gouv2,add=T,border="gray20",lwd=0.5)
 title("Carte vide",cex.main=1)
 
 # 3.2 Importation des données
@@ -51,33 +53,36 @@ stat1<-read.csv( "data/VoteByDeleg.csv",
                 sep=",",
                 dec=".",
                 encoding="UTF8",stringsAsFactors = F)
-head(stat1)
+# head(stat1)
 
 stat2<-read.csv( "data/data_admin_2014.csv",
                  header=TRUE,
                  sep=",",
                  dec=",",
                  encoding="UTF8",stringsAsFactors = F)
-head(stat2)
+# head(stat2)
 
 
 stat<-merge(stat2,stat1,by="id",all.x=T,all.y=T)
 
 # vérification de l'identifiant des données statistiques
-head(stat)
-dim(stat)
+# head(stat)
+# dim(stat)
 
 # 3.3 Selection des variables utiles (choix du candidat)
 
 tab<-stat[,c(1,3,14,15,16,13)]
 names(tab)<-c("code","nom","urb","dtun","dlit","dgou")
-tab$P<-stat$Votants
-tab$V<-stat$V_nuls+stat$V_blancs
+
+  tab$P<-stat$Votants
+  tab$V<-stat$V_nuls+stat$V_blancs
+  nameZ<-"Votes blancs & nuls"
+  
 tab$Z<-tab$V/tab$P
 moypond<-sum(tab$V)/sum(tab$P)
 maximum<-max(tab$Z)
-tab$Z100<-100*tab$Z/moypond
-nameZ<-"Votes blancs & nuls"
+tab$Z100<-100*tab$Z/moypond #indice 100
+
 head(tab)
 str(tab)
 
@@ -93,7 +98,7 @@ str(tab)
 # (4.1) Création d'une carte en symboles proportionnels
 par(mfrow=c(1,2), mar=c(0,0,1,0))
 plot(del1,col="lightyellow",border="gray60",lwd=0.1)
-plot(gou1,add=T,border="gray20",lwd=0.5)
+plot(gouv1,add=T,border="gray20",lwd=0.5)
 propSymbolsLayer(spdf=del1,
                  df = tab,
                  var = "V",
@@ -108,7 +113,7 @@ layoutLayer(title = nameZ,
             south = F,
             sources = "")
 plot(del2,col="lightyellow",border="gray60",lwd=0.1)
-plot(gou2,add=T,border="gray20",lwd=0.5)
+plot(gouv2,add=T,border="gray20",lwd=0.5)
 propSymbolsLayer(spdf=del2,
                  df = tab,
                  var = "V",
@@ -130,8 +135,6 @@ layoutLayer(title = nameZ,
 
 # (4.2) Création d'une Carte Choroplèthe ("zonale")
 
-# définit un indice 100
-
 
 cols <- carto.pal(pal1 = "blue.pal", n1 = 3, pal2 = "red.pal", n2 = 3)
 
@@ -148,7 +151,7 @@ choroLayer(spdf = del1,
            legend.pos = "bottomleft",
            legend.title.txt = "100=moy",
            legend.values.rnd = 2)
-plot(gou1,add=T,border="gray20",lwd=0.5)
+plot(gouv1,add=T,border="gray20",lwd=0.5)
 layoutLayer(title = nameZ,
             author = "",
             col = "grey",
@@ -165,7 +168,7 @@ choroLayer(spdf = del2,
            legend.pos = "bottomleft",
            legend.title.txt = "100=moy",
            legend.values.rnd = 2)
-plot(gou2,add=T,border="gray20",lwd=0.5)
+plot(gouv2,add=T,border="gray20",lwd=0.5)
 layoutLayer(title = nameZ,
             author = "",
             col = "grey",
@@ -178,7 +181,6 @@ layoutLayer(title = nameZ,
 # 5. Vote et marginalité
 # =======================================
 
-library(vcd)
 par(mfrow=c(2,2),mar=c(2,1,3,1))
 cols <- carto.pal(pal1 = "blue.pal", n1 = 3, pal2 = "red.pal", n2 = 3)
 
@@ -187,7 +189,7 @@ vote<-tab$Z100
 vote6<-cut(vote,breaks=c(0,25,50,100,200,400,100000))
 levels(vote6)<-c("V1","V2","V3","V4","V5","V6")
 table(vote6)
-
+summary(vote6)
 
 # (5.1) Votes / hiérarchie urbaine
 urb<-as.factor(tab$urb)
@@ -195,14 +197,11 @@ levels(urb)<-c("<10","10-20","20-50","50-100","+100","Tunis")
 
 x<-table(urb,vote6)
 x<-x[,apply(x,FUN="sum",2)!=0]
-t<-chisq.test(x,)
-
+t<-chisq.test(x)
 titre<-paste("Chi2 = ",round(t$statistic,1)," / p-value =",round(t$p.value,4))
 mosaicplot(urb~vote6,color=cols, main=NULL,
            xlab=titre, ylab=NULL,cex.axis=0.8)
 title("Niveau urbain (1000 h.)")
-
-
 
 # (5.2)  Votes / distance à Tunis
 
@@ -262,8 +261,6 @@ title("Distance au chef-lieu (km)")
 
 
 # (5.1) Concentration des votes par délégation
-
-
 
 par(mfrow=c(1,1),mar=c(4,4,4,4))
 ## compute the Lorenz curves
